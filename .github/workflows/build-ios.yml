@@ -33,6 +33,14 @@ jobs:
       - name: Build iOS (không ký)
         run: flutter build ios --release --no-codesign
 
+      - name: Kiểm tra Info.plist (thiếu sẽ bị màn hình đen)
+        run: |
+          P=build/ios/iphoneos/Runner.app/Info.plist
+          plutil -lint "$P"
+          for k in UIMainStoryboardFile UILaunchStoryboardName UIApplicationSceneManifest; do
+            /usr/libexec/PlistBuddy -c "Print :$k" "$P" > /dev/null || { echo "Thiếu $k trong Info.plist"; exit 1; }
+          done
+
       - name: Đóng gói .ipa
         run: |
           mkdir -p Payload
