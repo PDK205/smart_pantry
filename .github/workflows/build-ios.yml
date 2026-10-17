@@ -1,0 +1,58 @@
+# Build file .ipa CHƯA KÝ cho iOS trên máy Mac của GitHub.
+# Tải .ipa ở mục Releases (mở được thẳng trên iPhone), rồi ký & cài bằng
+# Feather / ESign (chứng chỉ UDID) hoặc Sideloadly.
+name: Build iOS IPA
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # cho phép bấm "Run workflow" thủ công trên GitHub
+
+permissions:
+  contents: write # để tạo Release chứa file .ipa
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.47.7
+          cache: true
+
+      - name: Cài package
+        run: flutter pub get
+
+      - name: Chạy test
+        run: flutter test
+
+      - name: Build iOS (không ký)
+        run: flutter build ios --release --no-codesign
+
+      - name: Đóng gói .ipa
+        run: |
+          mkdir -p Payload
+          cp -R build/ios/iphoneos/Runner.app Payload/
+          zip -qry SmartPantry.ipa Payload
+          ls -lh SmartPantry.ipa
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SmartPantry-ipa
+          path: SmartPantry.ipa
+          retention-days: 30
+
+      - name: Tạo Release (link tải trực tiếp trên iPhone)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ios-build-${{ github.run_number }}
+          name: Smart Pantry iOS build ${{ github.run_number }}
+          body: |
+            File .ipa CHƯA KÝ. Tải về iPhone → Chia sẻ → Feather/ESign để ký & cài.
+            Commit: ${{ github.sha }}
+          files: SmartPantry.ipa

@@ -1,0 +1,34 @@
+name: smart_pantry
+description: Smart Pantry - quản lý tủ lạnh thông minh với Gemini AI (Flutter)
+publish_to: 'none'
+version: 2.0.0+2
+
+environment:
+  sdk: '>=3.4.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  flutter_riverpod: ^2.6.1
+  shared_preferences: ^2.3.0
+  intl: '>=0.19.0 <1.0.0'
+  flutter_slidable: ^3.1.0
+  image_picker: ^1.1.2
+  path_provider: ^2.1.4
+  path: ^1.9.0
+  mobile_scanner: ^7.0.0
+  flutter_local_notifications: ^19.0.0
+  timezone: '>=0.9.4 <1.0.0'
+  # Mới: gọi Gemini API + tra mã vạch
+  http: ^1.2.2
+  # Mới: font Be Vietnam Pro hiển thị tiếng Việt đẹp
+  google_fonts: ^6.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
